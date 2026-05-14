@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Apps page for Chicken King's Vault with Helios Browser." />
+    <link rel="icon" type="image/png" href="favicon.png">
+    <title>Apps - Chicken King's Vault</title>
+    <style>
+        :root {
+            --bg: #0b0b0d;
+            --surface: #141417;
+            --surface-alt: #1d1d21;
+            --accent: #f5a623;
+            --accent-fg: #000;
+            --text: #e2e2e6;
+            --text-muted: #7a7a82;
+            --border: rgba(255, 255, 255, 0.07);
+            --radius: 10px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            min-height: 100vh;
+            background: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+        .site-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(11,11,13,0.95);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--border);
+        }
+        .header-inner {
+            max-width: 1340px;
+            margin: 0 auto;
+            padding: 0 22px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+        .site-nav {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+        }
+        .site-nav a {
+            color: var(--text-muted);
+            font-size: 14px;
+            text-decoration: none;
+            transition: color 0.15s;
+        }
+        .site-nav a:hover {
+            color: var(--text);
+        }
+        main {
+            max-width: 1340px;
+            margin: 0 auto;
+            padding: 36px 22px 80px;
+        }
+        .page-title {
+            font-size: 36px;
+            margin-bottom: 16px;
+        }
+        .subtitle {
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            max-width: 740px;
+            line-height: 1.75;
+        }
+        .app-grid {
+            display: grid;
+            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        }
+        .app-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+        .app-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255,255,255,0.16);
+        }
+        .app-icon {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            border-radius: 18px;
+            background: linear-gradient(135deg, rgba(245,166,35,0.1), rgba(255,255,255,0.06));
+            display: grid;
+            place-items: center;
+            font-size: 48px;
+            color: var(--accent);
+        }
+        .app-name {
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .app-description {
+            color: var(--text-muted);
+            line-height: 1.6;
+            flex: 1;
+        }
+        .app-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .app-actions a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 14px;
+            border-radius: 999px;
+            color: var(--text);
+            background: rgba(255,255,255,0.08);
+            border: 1px solid transparent;
+            text-decoration: none;
+            transition: background 0.15s, border-color 0.15s;
+        }
+        .app-actions a:hover {
+            background: rgba(245,166,35,0.12);
+            border-color: rgba(245,166,35,0.3);
+        }
+        .app-actions a.primary {
+            background: var(--accent);
+            color: var(--accent-fg);
+        }
+        .app-actions a.primary:hover {
+            background: #ffb64d;
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-inner">
+            <nav class="site-nav">
+                <a href="index.html">Home</a>
+                <a href="apps.html">Apps</a>
+                <a href="gamefiles/heliosbrowser.html">Helios Browser</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <h1 class="page-title">Apps</h1>
+        <p class="subtitle">Explore available apps for Chicken King's Vault. Helios Browser is included here as a premium app with easy access.</p>
+
+        <div class="app-grid">
+            <article class="app-card">
+                <div class="app-icon">🌐</div>
+                <div>
+                    <div class="app-name">Helios Browser</div>
+                    <p class="app-description">Launch Helios Browser with its unblockable proxy experience embedded in your website.</p>
+                </div>
+                <div class="app-actions">
+                    <a class="primary" href="gamefiles/heliosbrowser.html">Open Helios Browser</a>
+                    <a href="gamefiles/Helios Browser.html">View Raw Helios Page</a>
+                </div>
+            </article>
+        </div>
+    </main>
+</body>
+</html>

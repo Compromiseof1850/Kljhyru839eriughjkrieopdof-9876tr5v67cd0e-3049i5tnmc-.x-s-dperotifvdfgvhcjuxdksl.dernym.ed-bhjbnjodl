@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+    <!-- Google tag (gtag.js) -->
+    <!-- This is just so I can see page views and anylitics for Helios. None of your data is collected. -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-8VVWXBH142"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', 'G-8VVWXBH142');
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Helios is a completely unblockable web proxy, built with speed and privacy in mind.">
+    <title>Helios Browser</title>
+    <style>body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background-color: #202124;
+  color: #e8eaed;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  z-index: 0;
+  font-size: 17px;
+  font-weight: 500;
+}
+
+::placeholder {
+  color: #c4d4d4;
+  opacity: 1;
+}
+
+.search-containeraa {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.search-engine-dropdownaa {
+  position: absolute;
+  right: 23px;
+  top: -27px;
+  width: 56px;
+  height: 55px;
+  background-color: #3c4043;
+  border: none;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  z-index: 2;
+}
+
+.search-engine-dropdownaa img {
+  width: 38px;
+  height: 38px;
+  pointer-events: none;
+  margin-top: 1px;
+  margin-left: 1px;
+}
+
+.dropdown-contentaa {
+  display: none;
+  position: absolute;
+  background-color: #3c4043;
+  min-width: 250px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  bottom: 36px;
+  left: -78px;
+  border-radius: 10px;
+  padding: 0;
+  border: 3px solid #66ffa1;
+}
+
+.dropdown-contentaa .status-messageaa {
+  color: #f1f1f1;
+  padding: 14px 14px;
+  background-color: #484d51;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  font-size: 15px;
+}
+
+.dropdown-contentaa a {
+  color: #fff;
+  padding: 12px 12px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  height: 48px;
+  box-sizing: border-box;
+  border-radius: 10px;
+}
+
+.dropdown-contentaa a:hover {
+  background-color: #484d51;
+  border-radius: 10px;
+}
+
+.dropdown-contentaa a img {
+  width: 28px;
+  height: 28px;
+  margin-right: 12px;
+}
+
+.dropdown-contentaa,
+.dropdown-contentaa a,
+.status-messageaa {
+  font-family: Arial, sans-serif;
+  font-size: 15px;
+}
+
+.cloak-buttonaa {
+  margin-top: 25px;
+  margin-right: 4px;
+  margin-left: 4px;
+  padding: 11px 0px;
+  width: 170px;
+  font-size: 16px;
+  background-color: #ff6161;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.cloak-buttonaa:hover {
+  background-color: #ff4747;
+}
+
+.uptop-baraa {
+  background-color: #242729;
+  display: flex;
+  align-items: center;
+  padding: 6px 10px;
+  z-index: 2147483644;
+}
+
+.uptop-baraa .tabaa {
+  display: flex;
+  align-items: center;
+  background-color: #454545;
+  color: #d9d9d9;
+  border-top-right-radius: 12px;
+  border-top-left-radius: 12px;
+  border-bottom-right-radius: 4.6px;
+  border-bottom-left-radius: 4.6px;
+  padding: 9px 10px;
+  margin-right: 9px;
+  margin-left: -1px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+  position: relative;
+  width: 204px;
+  max-width: 204px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-bottom: 2px;
+  margin-top: 1px;
+  z-index: 2147483644;
+}
+
+.uptop-baraa .tabaa .tab-nameaa {
+  flex-grow: 1;
+  margin-right: 5px;
+  margin-left: 3px;
+  margin-bottom: 2px;
+  overflow: hidden;
+  font-size: 14.6px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-top: 1px;
+  z-index: 2147483644;
+  display: flex;
+  align-items: center;
+  transition: margin-left 0.3s ease;
+}
+
+.uptop-baraa .tabaa .close-btnaa {
+  font-size: 15px;
+  color: #aaa;
+  cursor: pointer;
+  margin-left: 5px;
+  margin-right: 1px;
+  margin-top: 2px;
+  border-radius: 50%;
+  padding: 2px;
+  z-index: 2147483644;
+  transition: background-color 0.3s;
+}
+
+.uptop-baraa .tabaa .close-btnaa:hover {
+  color: #fff;
+  z-index: 2147483644;
+}
+
+.uptop-baraa .tabaa.activeaa {
+  position: relative;
+  background-color: #5c5c5c;
+  color: #fff;
+  z-index: 2147483644;
+}
+
+.uptop-baraa .tabaa.activeaa::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 4px;
+  background-color: #4dffa6;
+}
+
+.uptop-baraa .tabaa:hover {
+  background-color: #505050;
+  z-index: 2147483644;
+}
+
+.uptop-baraa .add-tabaa {
+  font-size: 23px;
+  color: #bfbfbf;
+  cursor: pointer;
+  margin-left: 5px;
+  transition: color 0.3s;
+  font-weight: 600;
+  margin-top: 2px;
+  z-index: 2147483644;
+  margin-right: 3px;
+}
+
+.uptop-baraa .add-tabaa:hover {
+  color: #ffffff;
+  z-index: 2147483644;
+}
+
+.browser-baraa {
+  display: flex;
+  align-items: center;
+  padding: 2.3px 15px;
+  background-color: #383c3f;
+  z-index: 2147483644;
+}
+
+.browser-baraa button {
+  background-color: transparent;
+  border: none;
+  font-size: 20px;
+  color: #9aa0a6;
+  margin-right: 12px;
+  cursor: pointer;
+  transition: color 0.3s;
+  z-index: 2147483644;
+}
+
+.browser-baraa button:hover {
+  color: #ffffff;
+  z-index: 2147483644;
+}
+
+.browser-baraa .address-baraa {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  background-color: #52565b;
+  padding: 5px 13px;
+  border-radius: 500px;
+  color: #e8eaed;
+  font-size: 14px;
+  margin-left: 5px;
+  margin-right: 18px;
+  z-index: 2147483644;
+}
+
+.browser-baraa .address-baraa input {
+  border: none;
+  width: 100%;
+  outline: none;
+  font-size: 15.4px;
+  color: #e8eaed;
+  background-color: transparent;
+  z-index: 2147483644;
+}
+
+.tab-contentaa {
+  display: none;
+  flex-grow: 1;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  height: 100vh !important;
+  background: linear-gradient(145deg, #1e1e1e, #292929);
+}
+
+.tab-contentaa.activeaa {
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+
+.search-baraa {
+  display: flex;
+  align-items: center;
+  background-color: #3c4043;
+  padding: 15px;
+  border-radius: 30px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+  width: 45%;
+  margin-left: 50px;
+  margin-top: 30px;
+  z-index: 1;
+}
+
+.search-baraa input {
+  border: none;
+  width: 100%;
+  outline: none;
+  font-size: 18px;
+  background-color: transparent;
+  color: #e8eaed;
+}
+
+.search-baraa i {
+  color: #9aa0a6;
+  margin-right: 15px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.search-baraa i:hover {
+  color: #ffffff;
+}
+
+.search-baraa .search-iconaa {
+  font-weight: 600;
+  font-size: 18px;
+  margin-right: 6px;
+}</style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  </head>
+  <body>
+    <div class="uptop-baraa">
+      <div class="tabaa activeaa">
+        <span class="tab-nameaa">New Tab</span>
+        <i class="fas fa-times close-btnaa"></i>
+      </div>
+      <div class="add-tabaa" title="Add tab" id="add-tabaa">
+        <i class="fa-solid fa-circle-plus"></i>
+      </div>
+    </div>
+    <div class="browser-baraa">
+      <button class="backward-buttonaa" title="Click to go back">
+        <i class="fas fa-arrow-left"></i>
+      </button>
+      <button class="forward-buttonaa" title="Click to go forward">
+        <i class="fas fa-arrow-right"></i>
+      </button>
+      <button class="reload-buttonaa" title="Reload this page">
+        <i class="fas fa-redo"></i>
+      </button>
+      <button class="home-buttonaa" title="Shortcut to helios://start">
+        <i class="fas fa-home"></i>
+      </button>
+      <div class="address-baraa">
+        <i class="fas fa-lock lock-iconaa"></i>
+        <input type="text" placeholder="Enter a URL" value="helios://start" id="url-baraa">
+      </div>
+      <button class="settings-buttonaa" title="Shortcut to helios://settings">
+        <i class="fas fa-cog"></i>
+      </button>
+    </div>
+    <div class="contentaa tab-contentaa activeaa">
+      <h23 style="font-size: 61px; font-weight: 600; margin: 0; letter-spacing: 1px;">Helios</h23>
+      <h21 style="font-size: 24px; font-weight: 400; color: #b3b3b3; margin-top: 0px; margin-bottom: -2px;">𝚟𝟷.𝟿.𝟶</h21>
+      <div class="search-baraa">
+        <div class="search-containeraa">
+          <div class="search-engine-dropdownaa" onclick="toggleDropdown()">
+            <img src="https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://google.com&size=256" alt="Google" id="selected-engineaa">
+          </div>
+          <div class="dropdown-contentaa" id="engineDropdownaa">
+            <div class="status-messageaa" id="statusMessageaa">Searching with Google</div>
+            <a href="javascript:void(0);" onclick="selectEngine('https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://google.com&size=256', 'Google')" data-engine="Google">
+              <img src="https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://google.com&size=256" alt="Google"> &nbsp;Search with Google </a>
+            <a href="javascript:void(0);" onclick="selectEngine('https://www.bing.com/favicon.ico', 'Bing')" data-engine="Bing">
+              <img src="https://www.bing.com/favicon.ico" alt="Bing"> &nbsp;Search with Bing </a>
+          </div>
+        </div>
+        <input type="text" placeholder="Search the web or enter a URL [Ctrl + K]" id="search-input">
+        <i class="fas fa-search search-iconaa"></i>
+      </div>
+    </div>
+    <script>
+      // Simple URL handler
+      document.getElementById('url-baraa').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          let url = e.target.value.trim();
+          if (!url.startsWith('http')) {
+            url = 'https://' + url;
+          }
+          window.open(url, '_blank');
+        }
+      });
+
+      document.getElementById('search-input').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          const query = e.target.value.trim();
+          if (query) {
+            window.open('https://www.google.com/search?q=' + encodeURIComponent(query), '_blank');
+          }
+        }
+      });
+
+      function toggleDropdown() {
+        var dropdown = document.getElementById('engineDropdownaa');
+        dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+      }
+
+      function selectEngine(iconSrc, engineName) {
+        document.getElementById('selected-engineaa').src = iconSrc;
+        document.getElementById('statusMessageaa').textContent = "Searching with " + engineName;
+        toggleDropdown();
+      }
+    </script>
+  </body>
+</html>
+        <style>
+        :root {
+            --bg: #0b0b0d;
+            --surface: #141417;
+            --surface-alt: #1d1d21;
+            --accent: #f5a623;
+            --accent-fg: #000;
+            --text: #e2e2e6;
+            --text-muted: #7a7a82;
+            --border: rgba(255, 255, 255, 0.07);
+            --radius: 10px;
+            --radius-sm: 6px;
+        }
+        html,body { height:100%; margin:0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); }
+        .toolbar { display:flex; gap:.5rem; padding:.5rem; background: rgba(11, 11, 13, 0.88); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); color: var(--text); align-items:center; }
+        button { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-muted); padding: 5px 13px; font-size: 13px; transition: color 0.12s, border-color 0.12s, background 0.12s; cursor:pointer; line-height: 1; }
+        button:hover { color: var(--text); border-color: rgba(255, 255, 255, 0.18); }
+        button:active { transform:translateY(1px); }
+        .frame-wrapper { height: calc(100% - 56px); background: var(--bg); display:flex; }
+        iframe { border:0; width:100%; height:100%; display:block; }
+    </style>
+</head>
+<body>
+    <div class="toolbar">
+        <span>Helios Browser</span>
+        <button id="homeBtn">Home</button>
+        <div style="flex:1"></div>
+        <button id="fsBtn">Enter fullscreen</button>
+    </div>
+
+    <div class="frame-wrapper" id="frameWrapper">
+        <iframe id="gameFrame" src="Helios Browser.html" allowfullscreen allow="fullscreen"></iframe>
+    </div>
+
+    <script>
+        const fsBtn = document.getElementById('fsBtn');
+        const wrapper = document.getElementById('frameWrapper');
+        const iframe = document.getElementById('gameFrame');
+        const homeBtn = document.getElementById('homeBtn');
+
+        function isFullscreen() {
+            return !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+        }
+
+        function requestFull(element) {
+            if (element.requestFullscreen) return element.requestFullscreen();
+            if (element.webkitRequestFullscreen) return element.webkitRequestFullscreen();
+            if (element.mozRequestFullScreen) return element.mozRequestFullScreen();
+            if (element.msRequestFullscreen) return element.msRequestFullscreen();
+        }
+
+        function exitFull() {
+            if (document.exitFullscreen) return document.exitFullscreen();
+            if (document.webkitExitFullscreen) return document.webkitExitFullscreen();
+            if (document.mozCancelFullScreen) return document.mozCancelFullScreen();
+            if (document.msExitFullscreen) return document.msExitFullscreen();
+        }
+
+        fsBtn.addEventListener('click', async () => {
+            try {
+                if (!isFullscreen()) {
+                    // Many browsers don't allow making a cross-origin iframe the fullscreen root,
+                    // so request fullscreen on the wrapper element instead.
+                    await requestFull(wrapper);
+                    fsBtn.textContent = 'Exit fullscreen';
+                } else {
+                    await exitFull();
+                    fsBtn.textContent = 'Enter fullscreen';
+                }
+            } catch (e) {
+                console.error('Fullscreen request failed', e);
+            }
+        });
+
+        // Home button navigates to index.html
+        homeBtn.addEventListener('click', () => {
+            window.location.href = 'index.html';
+        });
+
+        // Update button text if user exits fullscreen via ESC or browser UI
+        document.addEventListener('fullscreenchange', () => {
+            fsBtn.textContent = isFullscreen() ? 'Exit fullscreen' : 'Enter fullscreen';
+        });
+        document.addEventListener('webkitfullscreenchange', () => {
+            fsBtn.textContent = isFullscreen() ? 'Exit fullscreen' : 'Enter fullscreen';
+        });
+        document.addEventListener('mozfullscreenchange', () => {
+            fsBtn.textContent = isFullscreen() ? 'Exit fullscreen' : 'Enter fullscreen';
+        });
+        document.addEventListener('MSFullscreenChange', () => {
+            fsBtn.textContent = isFullscreen() ? 'Exit fullscreen' : 'Enter fullscreen';
+        });
+    </script>
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
