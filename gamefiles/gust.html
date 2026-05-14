@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Launch the GUST app page for Chicken King's Vault.">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <title>GUST</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Inter, system-ui, sans-serif;
+            background: #0b0b0d;
+            color: #e2e2e6;
+            display: flex;
+            flex-direction: column;
+        }
+        .page-shell {
+            max-width: 940px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 28px 22px;
+        }
+        .site-nav {
+            display: flex;
+            gap: 18px;
+            flex-wrap: wrap;
+            margin-bottom: 42px;
+        }
+        .site-nav a {
+            color: #b8b8bf;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .site-nav a:hover {
+            color: #fff;
+        }
+        .hero {
+            background: #141417;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 30px;
+        }
+        .hero h1 {
+            margin: 0 0 14px;
+            font-size: 42px;
+        }
+        .hero p {
+            margin: 0 0 22px;
+            line-height: 1.75;
+            color: #b8b8bf;
+            max-width: 680px;
+        }
+        .hero-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .hero-buttons a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 18px;
+            border-radius: 999px;
+            text-decoration: none;
+            color: #fff;
+            background: #f5a623;
+            transition: background 0.2s ease;
+        }
+        .hero-buttons a.secondary {
+            background: rgba(255,255,255,0.08);
+            color: #e2e2e6;
+        }
+        .hero-buttons a:hover {
+            background: #ffa92c;
+        }
+        .hero-buttons a.secondary:hover {
+            background: rgba(255,255,255,0.14);
+        }
+        .note {
+            margin-top: 24px;
+            color: #8d8d94;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-shell">
+        <nav class="site-nav">
+            <a href="/index.html">Home</a>
+            <a href="/apps.html">Apps</a>
+        </nav>
+
+        <section class="hero">
+            <h1>GUST</h1>
+            <p>GUST is added as a new app page for Chicken King's Vault. Use this launcher to open the GitHub repository and learn more about the project.</p>
+            <div class="hero-buttons">
+                <a href="https://github.com/nautilus-os/GUST" target="_blank" rel="noopener">Open GUST on GitHub</a>
+                <a class="secondary" href="/apps.html">Back to Apps</a>
+            </div>
+            <p class="note">Note: this page links to the official GUST repository because the app is hosted externally.</p>
+        </section>
+    </div>
+</body>
+</html>
