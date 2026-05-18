@@ -12,7 +12,7 @@
     <meta name="twitter:title" content="Chicken Kings Vault">
     <meta name="twitter:description" content="Hundreds of free unblocked games.">
     <link rel="icon" type="image/png" href="favicon.png">
-    <title>Google Docs</title>
+    <title>Chicken Kings Vault | Free Unblocked Games</title>
     <link rel="stylesheet" href="assets/app.css">
 
     <!-- Google tag (gtag.js) -->
@@ -25,16 +25,12 @@
     </script>
 </head>
 <body>
-    <div id="pin-overlay">
-        <div class="pin-container">
-            <h2>Enter PIN to Access Games</h2>
-            <input type="password" id="pin-input" placeholder="Enter PIN">
-            <button id="pin-submit">Submit</button>
-            <p id="pin-error" style="display:none; color:red;">Incorrect PIN. Try again.</p>
-        </div>
-    </div>
     <header class="site-header">
         <div class="header-inner">
+            <a class="wordmark" href="index.html">
+                <img src="favicon.png" alt="CKV logo">
+                Chicken Kings Vault
+            </a>
             <nav class="site-nav">
                 <a href="index.html">Home</a>
                 <a href="apps.html">Apps</a>
@@ -42,12 +38,20 @@
         </div>
     </header>
 
+    <section class="hero">
+        <div class="hero-inner">
+            <h1>Hundreds of free unblocked games in one vault</h1>
+            <p>Search, filter by category, save favorites, and only keep playable links. Broken games are hidden automatically.</p>
+        </div>
+    </section>
+
     <main>
         <section class="controls-bar">
             <input id="search" type="search" placeholder="search games..." autocomplete="off" spellcheck="false">
-            <div style="display: flex; gap: 10px; justify-content: center; margin-top: 12px; flex-wrap: wrap;">
-                <button id="view-all-btn" class="view-btn active" style="display: none;">All Games</button>
-                <button id="view-favorites-btn" class="view-btn" style="display: none;">❤ My Favorites</button>
+            <div id="tag-filters" class="tag-filters"></div>
+            <div class="view-toggle">
+                <button id="view-all-btn" class="view-btn active">All Games</button>
+                <button id="view-favorites-btn" class="view-btn">❤ Favorites</button>
             </div>
         </section>
 
@@ -67,32 +71,6 @@
 
     <script src="games.js"></script>
     <script src="assets/app.js"></script>
-    <script>
-        const pinOverlay = document.getElementById('pin-overlay');
-        const pinInput = document.getElementById('pin-input');
-        const pinSubmit = document.getElementById('pin-submit');
-        const pinError = document.getElementById('pin-error');
-
-        if (sessionStorage.getItem('authenticated') === 'true') {
-            pinOverlay.style.display = 'none';
-        } else {
-            pinSubmit.addEventListener('click', () => {
-                if (pinInput.value === '2021') {
-                    sessionStorage.setItem('authenticated', 'true');
-                    pinOverlay.style.display = 'none';
-                } else {
-                    pinError.style.display = 'block';
-                    pinInput.value = '';
-                }
-            });
-
-            pinInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    pinSubmit.click();
-                }
-            });
-        }
-    </script>
 </body>
 </html>
 

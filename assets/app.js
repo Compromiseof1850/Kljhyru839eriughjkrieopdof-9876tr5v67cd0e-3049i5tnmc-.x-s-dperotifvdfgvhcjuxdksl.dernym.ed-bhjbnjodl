@@ -2,7 +2,6 @@ const HISTORY_KEY = 'ckv_history';
 const USER_ID_KEY = 'ckv_user_id';
 const FAVORITES_KEY = 'ckv_favorites';
 
-// User identification system - unique per browser/device
 function getUserId() {
     let userId = localStorage.getItem(USER_ID_KEY);
     if (!userId) {
@@ -15,34 +14,33 @@ function getUserId() {
 function getFavorites() {
     try {
         const userId = getUserId();
-        const favs = JSON.parse(localStorage.getItem(FAVORITES_KEY + '_' + userId) || '[]');
-        return favs;
+        return JSON.parse(localStorage.getItem(FAVORITES_KEY + '_' + userId) || '[]');
     } catch {
         return [];
     }
 }
 
 function isFavorite(href) {
-    return getFavorites().some(g => g.href === href);
+    return getFavorites().some(game => game.href === href);
 }
 
 function toggleFavorite(href, title, img, alt) {
     const userId = getUserId();
     const key = FAVORITES_KEY + '_' + userId;
     const favs = getFavorites();
-    const idx = favs.findIndex(g => g.href === href);
-    
-    if (idx !== -1) {
-        favs.splice(idx, 1);
+    const index = favs.findIndex(game => game.href === href);
+
+    if (index !== -1) {
+        favs.splice(index, 1);
     } else {
         favs.unshift({ href, title, img, alt });
     }
-    
+
     try {
         localStorage.setItem(key, JSON.stringify(favs));
     } catch {}
-    
-    return !isFavorite(href);
+
+    return index === -1;
 }
 
 const tagKeywords = {
@@ -61,32 +59,35 @@ const tagKeywords = {
 
 function getTagsForTitle(title) {
     const lower = title.toLowerCase();
-    const found = [];
-    for (const [tag, keywords] of Object.entries(tagKeywords)) {
-        if (keywords.some(kw => lower.includes(kw))) found.push(tag);
-    }
-    return found;
+    return Object.entries(tagKeywords).reduce((tags, [tag, keywords]) => {
+        if (keywords.some(kw => lower.includes(kw))) tags.push(tag);
+        return tags;
+    }, []);
 }
 
 function getHistory() {
-    try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'); }
-    catch { return []; }
+    try {
+        return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+    } catch {
+        return [];
+    }
 }
 
 function recordPlay(href, title) {
     const history = getHistory();
-    const idx = history.findIndex(g => g.href === href);
-    if (idx !== -1) history.splice(idx, 1);
+    const index = history.findIndex(entry => entry.href === href);
+    if (index !== -1) history.splice(index, 1);
     history.unshift({ href, title });
     if (history.length > 60) history.length = 60;
-    try { localStorage.setItem(HISTORY_KEY, JSON.stringify(history)); }
-    catch {}
+    try {
+        localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+    } catch {}
 }
 
 function parseGames() {
-    const div = document.createElement('div');
-    div.innerHTML = games;
-    return Array.from(div.querySelectorAll('.game-link')).map(a => ({
+    const container = document.createElement('div');
+    container.innerHTML = games;
+    return Array.from(container.querySelectorAll('.game-link')).map(a => ({
         href: a.getAttribute('href') || '',
         title: a.querySelector('div')?.textContent?.trim() || '',
         img: a.querySelector('img')?.getAttribute('src') || '',
@@ -94,27 +95,13 @@ function parseGames() {
     }));
 }
 
-function getSuggestions(allGames) {
-    const history = getHistory();
-    if (history.length < 2) return [];
-
-    const tagCounts = {};
-    history.slice(0, 20).forEach(g => {
-        getTagsForTitle(g.title).forEach(tag => {
-            tagCounts[tag] = (tagCounts[tag] || 0) + 1;
-        });
-    });
-
-    const played = new Set(history.map(g => g.href));
-    return allGames
-        .filter(g => !played.has(g.href))
-        .map(g => ({
-            ...g,
-            score: getTagsForTitle(g.title).reduce((n, t) => n + (tagCounts[t] || 0), 0),
-        }))
-        .filter(g => g.score > 0)
-        .sort((a, b) => b.score - a.score)
-        .slice(0, 8);
+function verifyGameAvailability(card, game) {
+    if (game.isRandom || !game.href || !window.fetch) return;
+    fetch(game.href, { method: 'HEAD', cache: 'no-store' })
+        .then(response => {
+            if (!response.ok) card.remove();
+        })
+        .catch(() => card.remove());
 }
 
 function buildCard(game) {
@@ -122,65 +109,64 @@ function buildCard(game) {
         const div = document.createElement('div');
         div.className = 'game-link random-game';
         div.id = 'random-btn';
+
         const img = document.createElement('img');
         img.id = 'random-preview';
         img.src = game.img;
         img.alt = game.alt;
+
         const label = document.createElement('div');
         label.textContent = game.title;
+
         div.appendChild(img);
         div.appendChild(label);
+
         div.addEventListener('click', () => {
             const random = allGames[Math.floor(Math.random() * (allGames.length - 1)) + 1];
-            window.location.href = random.href;
+            if (random && random.href) window.location.href = random.href;
         });
+
         return div;
     }
+
     const container = document.createElement('div');
     container.className = 'game-card-container';
-    container.style.position = 'relative';
-    
-    const a = document.createElement('a');
-    a.className = 'game-link';
-    a.href = game.href;
+
+    const link = document.createElement('a');
+    link.className = 'game-link';
+    link.href = game.href;
+    link.setAttribute('aria-label', `Open ${game.title}`);
+
     const img = document.createElement('img');
     img.src = game.img;
     img.alt = game.alt;
     img.loading = 'lazy';
-    const label = document.createElement('div');
-    label.textContent = game.title;
-    a.appendChild(img);
-    a.appendChild(label);
-    a.addEventListener('click', () => recordPlay(game.href, game.title));
-    
-    // Add favorite button
+
+    img.addEventListener('error', () => container.remove());
+
+    const titleLabel = document.createElement('div');
+    titleLabel.textContent = game.title;
+
+    link.appendChild(img);
+    link.appendChild(titleLabel);
+    link.addEventListener('click', () => recordPlay(game.href, game.title));
+
     const favBtn = document.createElement('button');
     favBtn.className = 'favorite-btn';
-    favBtn.setAttribute('data-href', game.href);
-    favBtn.setAttribute('data-title', game.title);
-    favBtn.setAttribute('data-img', game.img);
-    favBtn.setAttribute('data-alt', game.alt);
-    
-    function updateFavBtn() {
-        if (isFavorite(game.href)) {
-            favBtn.textContent = '❤';
-            favBtn.classList.add('favorited');
-        } else {
-            favBtn.textContent = '🤍';
-            favBtn.classList.remove('favorited');
-        }
-    }
-    updateFavBtn();
-    
-    favBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
+    favBtn.setAttribute('aria-label', `Toggle favorite for ${game.title}`);
+    favBtn.textContent = isFavorite(game.href) ? '❤' : '🤍';
+    if (isFavorite(game.href)) favBtn.classList.add('favorited');
+
+    favBtn.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
         toggleFavorite(game.href, game.title, game.img, game.alt);
-        updateFavBtn();
+        favBtn.textContent = isFavorite(game.href) ? '❤' : '🤍';
+        favBtn.classList.toggle('favorited');
         renderFavorites();
     });
-    
-    container.appendChild(a);
+
+    container.appendChild(link);
     container.appendChild(favBtn);
     return container;
 }
@@ -192,7 +178,7 @@ const randomGame = {
     title: 'Random Game',
     img: allGames[0]?.img || 'favicon.png',
     alt: 'Random Game Cover',
-    isRandom: true
+    isRandom: true,
 };
 allGames.unshift(randomGame);
 allGames.sort((a, b) => {
@@ -201,60 +187,140 @@ allGames.sort((a, b) => {
     return a.title.localeCompare(b.title, undefined, { numeric: true });
 });
 
-const grid          = document.getElementById('game-grid');
+const grid = document.getElementById('game-grid');
 const favoritesGrid = document.getElementById('favorites-grid');
 const favoritesSection = document.getElementById('favorites-section');
-const searchEl      = document.getElementById('search');
-const tagFiltersEl  = document.getElementById('tag-filters');
-const noResults     = document.getElementById('no-results');
-const noFavorites   = document.getElementById('no-favorites');
-const forYouSection = document.getElementById('for-you');
-const suggestionsRow = document.getElementById('suggestions-row');
-const viewAllBtn    = document.getElementById('view-all-btn');
+const searchEl = document.getElementById('search');
+const tagFiltersEl = document.getElementById('tag-filters');
+const noResults = document.getElementById('no-results');
+const viewAllBtn = document.getElementById('view-all-btn');
 const viewFavoritesBtn = document.getElementById('view-favorites-btn');
 
-let activeTag    = 'all';
-let searchQuery  = '';
-let currentView  = 'all'; // 'all' or 'favorites'
+let activeTag = 'all';
+let searchQuery = '';
+let currentView = 'all';
 
 searchEl.placeholder = `search ${allGames.length - 1} games...`;
 
-const fragment = document.createDocumentFragment();
-allGames.forEach(g => fragment.appendChild(buildCard(g)));
-grid.appendChild(fragment);
+function renderTagFilters() {
+    tagFiltersEl.innerHTML = '';
+
+    const allFilter = document.createElement('button');
+    allFilter.className = `tag-btn${activeTag === 'all' ? ' active' : ''}`;
+    allFilter.textContent = 'All';
+    allFilter.addEventListener('click', () => {
+        activeTag = 'all';
+        renderTagFilters();
+        refreshContent();
+    });
+    tagFiltersEl.appendChild(allFilter);
+
+    Object.keys(tagKeywords).forEach(tag => {
+        const button = document.createElement('button');
+        button.className = `tag-btn${activeTag === tag ? ' active' : ''}`;
+        button.textContent = tag;
+        button.addEventListener('click', () => {
+            activeTag = tag;
+            renderTagFilters();
+            refreshContent();
+        });
+        tagFiltersEl.appendChild(button);
+    });
+}
+
+function getFilteredGames() {
+    const query = searchQuery.trim().toLowerCase();
+    const favorites = new Set(getFavorites().map(game => game.href));
+
+    return allGames.filter(game => {
+        if (game.isRandom && currentView === 'favorites') return false;
+        if (currentView === 'favorites' && !favorites.has(game.href)) return false;
+        if (activeTag !== 'all' && !game.isRandom && !getTagsForTitle(game.title).includes(activeTag)) return false;
+        if (!query) return true;
+
+        return game.title.toLowerCase().includes(query)
+            || game.alt.toLowerCase().includes(query)
+            || game.href.toLowerCase().includes(query);
+    });
+}
+
+function renderGrid(games) {
+    grid.innerHTML = '';
+
+    if (games.length === 0) {
+        noResults.style.display = 'block';
+        grid.style.display = 'none';
+        return;
+    }
+
+    noResults.style.display = 'none';
+    grid.style.display = 'grid';
+
+    const fragment = document.createDocumentFragment();
+    games.forEach(game => {
+        const card = buildCard(game);
+        fragment.appendChild(card);
+        verifyGameAvailability(card, game);
+    });
+    grid.appendChild(fragment);
+}
+
+function updateViewButtons() {
+    viewAllBtn.classList.toggle('active', currentView === 'all');
+    viewFavoritesBtn.classList.toggle('active', currentView === 'favorites');
+}
+
+function toggleView(view) {
+    currentView = view;
+    updateViewButtons();
+    refreshContent();
+}
 
 function renderFavorites() {
     const favorites = getFavorites();
     favoritesGrid.innerHTML = '';
-    
-    if (favorites.length > 0) {
-        noFavorites.style.display = 'none';
-        favoritesSection.style.display = 'block';
-        viewAllBtn.style.display = 'inline-block';
-        viewFavoritesBtn.style.display = 'inline-block';
-        viewFavoritesBtn.textContent = `❤ My Favorites (${favorites.length})`;
-        
-        const frag = document.createDocumentFragment();
-        favorites.forEach(fav => {
-            const card = buildCard(fav);
-            frag.appendChild(card);
-        });
-        favoritesGrid.appendChild(frag);
-    } else {
+    viewAllBtn.style.display = 'inline-block';
+    viewFavoritesBtn.style.display = 'inline-block';
+    viewFavoritesBtn.textContent = `❤ Favorites (${favorites.length})`;
+
+    if (favorites.length === 0) {
         favoritesSection.style.display = 'none';
-        viewAllBtn.style.display = 'none';
-        viewFavoritesBtn.style.display = 'none';
+        return;
     }
+
+    favoritesSection.style.display = 'block';
+    const fragment = document.createDocumentFragment();
+    favorites.forEach(fav => {
+        const card = buildCard(fav);
+        fragment.appendChild(card);
+    });
+    favoritesGrid.appendChild(fragment);
 }
 
-// Initial render of favorites
-renderFavorites();
+function refreshContent() {
+    renderFavorites();
+    renderGrid(getFilteredGames());
+}
 
+searchEl.addEventListener('input', event => {
+    searchQuery = event.target.value;
+    refreshContent();
+});
+
+viewAllBtn.addEventListener('click', () => toggleView('all'));
+viewFavoritesBtn.addEventListener('click', () => toggleView('favorites'));
+
+renderTagFilters();
+refreshContent();
 
 const randomImg = document.getElementById('random-preview');
-const gameImages = [...allGames.slice(1)].map(g => g.img).sort(() => Math.random() - 0.5);
+const gameImages = [...allGames.slice(1)]
+    .map(game => game.img)
+    .filter(Boolean)
+    .sort(() => Math.random() - 0.5);
 let imgIndex = 0;
 setInterval(() => {
+    if (!randomImg || gameImages.length === 0) return;
     imgIndex = (imgIndex + 1) % gameImages.length;
     randomImg.src = gameImages[imgIndex];
 }, 200);
